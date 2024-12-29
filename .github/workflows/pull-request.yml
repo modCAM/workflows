@@ -1,0 +1,25 @@
+name: Pull request merge
+
+on:
+  merge_group:
+  pull_request:
+
+jobs:
+  merge1:
+    name: Merge1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo1
+        if: ${{github.ref == 'refs/pull/github.event.number/merge'}}
+        run: |
+          date
+          echo "Merging"
+  merge2:
+    name: Merge2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo2
+        if: ${{github.ref == 'refs/heads/main'}}
+        run: |
+          date
+          echo "Merging"
