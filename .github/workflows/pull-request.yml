@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo1
-        if: ${{github.ref == "refs/pull/$PR_NUMBER/merge"}}
+        if: ${{github.ref}} == "refs/pull/$PR_NUMBER/merge"}}
         run: |
           date
           echo "Merging"
