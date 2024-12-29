@@ -1,0 +1,12 @@
+name: Merge queue
+
+on:
+  merge_group:
+
+jobs:
+  mq:
+    name: Merge queue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "Merge queue"
