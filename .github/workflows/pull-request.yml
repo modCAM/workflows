@@ -10,12 +10,15 @@ jobs:
     steps:
       - name: Echo ref
         run: echo "${{github.ref}}"
+
+      - name: Echo event number
+        run: echo ${{"refs/pull/github.event.number/merge"}}
   merge1:
     name: Merge1
     runs-on: ubuntu-latest
     steps:
       - name: Echo1
-        if: ${{github.ref == 'refs/pull/github.event.number/merge'}}
+        if: ${{github.ref == "refs/pull/github.event.number/merge"}}
         run: |
           date
           echo "Merging"
