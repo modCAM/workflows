@@ -1,0 +1,15 @@
+name: Push to main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push-to-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: |
+          date
+          echo "Pushed to main"
