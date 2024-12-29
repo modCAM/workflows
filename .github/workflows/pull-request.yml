@@ -5,6 +5,11 @@ on:
   pull_request:
 
 jobs:
+  echo-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo ref
+        run: echo "${{github.ref}}"
   merge1:
     name: Merge1
     runs-on: ubuntu-latest
