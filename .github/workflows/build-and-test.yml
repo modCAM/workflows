@@ -1,0 +1,35 @@
+# The test workflow should run whenever changes are pushed to a pull request
+# branch or to 'main'. For any changes pushed to 'main', this workflow should
+# only run after a version update. This workflow should
+# - set up the build environment (use a container?),
+# - checkout the code,
+# - build the code,
+# - run linting checks, and
+# - run unit tests.
+
+name: Build and test
+
+on:
+  workflow_run:
+    workflows: [Update version]
+    types: [completed]
+    branches: [main]
+  push:
+    branches: [main]
+    paths: [VERSION]
+  pull_request:
+    paths-ignore: [VERSION]
+
+env:
+  VERSION_FILE: VERSION
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo
+        run: |
+          date
+          echo "Build and test"

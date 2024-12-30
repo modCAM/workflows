@@ -1,0 +1,23 @@
+# A release should be created on 'main' after tests pass.
+
+name: Create release
+
+on:
+  workflow_run:
+    workflows: [Build and test]
+    types: [completed]
+    branches: [main]
+
+env:
+  VERSION_FILE: VERSION
+
+jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo
+        run: |
+          date
+          echo "Create release"

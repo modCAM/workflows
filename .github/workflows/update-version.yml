@@ -1,0 +1,45 @@
+# The version should be updated whenever changes are made to 'main'. To update
+# the version, this workflow should
+# - checkout the code,
+# - update the VERSION file,
+# - amend the last commit to include the bumped VERSION file, and
+# - tag that commit with the new version.
+
+name: Update version
+
+on:
+  push:
+    branches: [main]
+
+env:
+  VERSION_FILE: VERSION
+
+jobs:
+  update-version:
+    name: Update version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Update version
+        run: cmake -P ./cmake/update_version.cmake
+
+      - name: Configure git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '<>'
+
+      - name: Commit new version
+        run: |
+          version="$(< $VERSION_FILE)"
+          echo "New version: $version"
+          git add $VERSION_FILE
+          git commit --amend --no-edit
+          git tag -a $version -m "$version"
+          git push origin main --follow-tags --force
