@@ -18,7 +18,7 @@ on:
     branches: [main]
     paths: [VERSION]
   pull_request:
-    paths-ignore: [VERSION]
+    paths-ignore: [LICENSE, README.md, VERSION]
 
 env:
   VERSION_FILE: VERSION

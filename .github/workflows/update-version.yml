@@ -10,6 +10,7 @@ name: Update version
 on:
   push:
     branches: [main]
+    paths: [include, packaging, src]
 
 env:
   VERSION_FILE: VERSION
