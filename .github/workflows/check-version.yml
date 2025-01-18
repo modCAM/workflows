@@ -28,7 +28,7 @@ jobs:
 
       - name: Check version
         run: |
-          version_changed=$(git diff --quiet $(git merge-base --fork-point origin/main); echo $?)
+          version_changed=$(git diff --quiet $(git merge-base --fork-point origin/main) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
             echo "VERSION file has changed! To restore the VERSION file, you need to..."
             echo "  git restore --source=$(git merge-base --fork-point main) -- VERSION"
