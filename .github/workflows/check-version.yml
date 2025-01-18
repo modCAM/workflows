@@ -10,7 +10,6 @@ name: Check VERSION file
 on:
   push:
     branches-ignore: [main]
-  pull_request:
 
 env:
   VERSION_FILE: VERSION
