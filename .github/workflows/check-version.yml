@@ -1,0 +1,33 @@
+# This workflow checks for changes made to the VERSION file. It should block
+# changes made by the developer, but it should let changes pass if they were
+# merged in from 'main'.
+#
+# Developers should not touch the VERSION file! It is automatically updated by a
+# workflow when a branch is merged into 'main'.
+
+name: Check VERSION file
+
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+
+env:
+  VERSION_FILE: VERSION
+
+jobs:
+  check-version:
+    name: Check version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check version
+        run: |
+          version_changed=$(git diff --quiet $(git merge-base --fork-point main); echo $?)
+          if [ $version_changed -ne 0 ]; then
+            echo "VERSION file has changed! To restore the VERSION file, you need to..."
+            echo "  git restore --source=$(git merge-base --fork-point main) -- VERSION"
+            echo "  git add VERSION"
+            echo "  git commit -m 'Restore VERSION"
+          fi
+          exit $version_changed
