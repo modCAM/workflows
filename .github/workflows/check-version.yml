@@ -21,6 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
       - name: Check version
         run: |
           version_changed=$(git diff --quiet $(git merge-base --fork-point main); echo $?)
