@@ -23,7 +23,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check version
+      # Credit to Brennan Kinney @polarathene for this solution to get a single branch's history
+      # https://github.com/actions/checkout/issues/520#issuecomment-1167205721
+      - name: Get branch history
         env:
           branch_base: origin/${{ github.event.pull_request.base.ref }}
           branch_pr: origin/${{ github.event.pull_request.head.ref }}
@@ -47,6 +49,10 @@ jobs:
           git fetch origin ${{ env.refspec_base }} --shallow-since="${DATE}" \
             --no-tags --prune --no-recurse-submodules
 
+      - name: Check version
+        env:
+          branch_base: origin/${{ github.event.pull_request.base.ref }}
+        run: |
           version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
             echo 'VERSION file has changed! To restore the VERSION file, you need to...'
@@ -55,16 +61,3 @@ jobs:
             echo '  git commit -m "Restore VERSION"'
           fi
           exit $version_changed
-
-      # - name: Check version
-      #   env:
-      #     branch_base: origin/${{ github.event.pull_request.base.ref }}
-      #   run: |
-      #     version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
-      #     if [ $version_changed -ne 0 ]; then
-      #       echo 'VERSION file has changed! To restore the VERSION file, you need to...'
-      #       echo '  git restore --source=$(git merge-base --fork-point main) -- VERSION'
-      #       echo '  git add VERSION'
-      #       echo '  git commit -m "Restore VERSION"'
-      #     fi
-      #     exit $version_changed
