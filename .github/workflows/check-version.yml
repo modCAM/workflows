@@ -23,7 +23,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: "Example - Get a list of changed files to process (fetching full PR commit history)"
+      - name: Check version
         env:
           branch_base: origin/${{ github.event.pull_request.base.ref }}
           branch_pr: origin/${{ github.event.pull_request.head.ref }}
