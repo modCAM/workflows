@@ -18,32 +18,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: "Example - Get a list of changed files to process (fetching full PR commit history)"
         env:
           branch_base: origin/${{ github.event.pull_request.base.ref }}
           branch_pr: origin/${{ github.event.pull_request.head.ref }}
           refspec_base: +${{ github.event.pull_request.base.sha }}:remotes/origin/${{ github.event.pull_request.base.ref }}
           refspec_pr: +${{ github.event.pull_request.head.sha }}:remotes/origin/${{ github.event.pull_request.head.ref }}
-          pr_commits: ${{ github.event.pull_request.commits }}
         run: |
-          echo ${{ env.branch_base }}
-          echo ${{ env.branch_pr }}
-          echo ${{ env.refspec_base }}
-          echo ${{ env.refspec_pr }}
-          echo ${{ env.pr_commits }}
+          # Fetch enough history to find a common ancestor commit (aka merge-base):
+          git fetch origin ${{ env.refspec_pr }} --depth=$(( ${{ github.event.pull_request.commits }} + 1 )) \
+            --no-tags --prune --no-recurse-submodules
 
-      - name: "PR commit + 1"
-        run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_ENV}"
+          # `actions/checkout` fetched a specific commit, not a branch (ref), so that commit was checked out in a
+          # detached HEAD state. Depending on what you do, you may want to additionally switch to the branch
+          # the refspec assigned the commit to in the prior fetch command:
+          git switch -c ${{ env.branch_pr }}
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: ${{ env.PR_FETCH_DEPTH }}
+          # This should get the oldest commit in the local fetched history (which may not be the commit the PR branched from):
+          COMMON_ANCESTOR=$( git rev-list --first-parent --max-parents=0 --max-count=1 ${{ env.branch_pr }} )
+          DATE=$( git log --date=iso8601 --format=%cd "${COMMON_ANCESTOR}" )
 
-      - name: Check version
-        run: |
-          version_changed=$(git diff --quiet $(git merge-base --fork-point origin/main) -- VERSION; echo $?)
+          # Get all commits since that commit date from the base branch
+          git fetch origin ${{ env.refspec_base }} --shallow-since="${DATE}" \
+            --no-tags --prune --no-recurse-submodules
+
+          version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
             echo 'VERSION file has changed! To restore the VERSION file, you need to...'
             echo '  git restore --source=$(git merge-base --fork-point main) -- VERSION'
@@ -51,3 +55,16 @@ jobs:
             echo '  git commit -m "Restore VERSION"'
           fi
           exit $version_changed
+
+      # - name: Check version
+      #   env:
+      #     branch_base: origin/${{ github.event.pull_request.base.ref }}
+      #   run: |
+      #     version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
+      #     if [ $version_changed -ne 0 ]; then
+      #       echo 'VERSION file has changed! To restore the VERSION file, you need to...'
+      #       echo '  git restore --source=$(git merge-base --fork-point main) -- VERSION'
+      #       echo '  git add VERSION'
+      #       echo '  git commit -m "Restore VERSION"'
+      #     fi
+      #     exit $version_changed
