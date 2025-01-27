@@ -24,16 +24,22 @@ jobs:
           branch_pr: origin/${{ github.event.pull_request.head.ref }}
           refspec_base: +${{ github.event.pull_request.base.sha }}:remotes/origin/${{ github.event.pull_request.base.ref }}
           refspec_pr: +${{ github.event.pull_request.head.sha }}:remotes/origin/${{ github.event.pull_request.head.ref }}
+          pr_commits: ${{ github.event.pull_request.commits }}
         run: |
           echo ${{ env.branch_base }}
           echo ${{ env.branch_pr }}
           echo ${{ env.refspec_base }}
           echo ${{ env.refspec_pr }}
+          echo ${{ env.pr_commits }}
+
+      - name: "PR commit + 1"
+        run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_ENV}"
 
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: ${{ env.PR_FETCH_DEPTH }}
 
       - name: Check version
         run: |
