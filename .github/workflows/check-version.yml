@@ -38,12 +38,6 @@ jobs:
             --depth=$(( ${{ github.event.pull_request.commits }} + 1 )) \
             --no-tags --prune --no-recurse-submodules
 
-          # `actions/checkout` fetched a specific commit, not a branch (ref), so
-          # that commit was checked out in a detached HEAD state. We want to
-          # additionally switch to the branch the refspec assigned the commit to
-          # in the prior fetch command:
-          # git switch -c ${{ env.branch_pr }}
-
           # This should get the oldest commit in the local fetched history
           # (which may not be the commit the PR branched from):
           COMMON_ANCESTOR=$( git rev-list --first-parent --max-parents=0 --max-count=1 ${{ env.branch_pr }} )
