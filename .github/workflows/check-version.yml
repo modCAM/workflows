@@ -42,7 +42,7 @@ jobs:
           # that commit was checked out in a detached HEAD state. We want to
           # additionally switch to the branch the refspec assigned the commit to
           # in the prior fetch command:
-          git switch -c ${{ env.branch_pr }}
+          # git switch -c ${{ env.branch_pr }}
 
           # This should get the oldest commit in the local fetched history
           # (which may not be the commit the PR branched from):
