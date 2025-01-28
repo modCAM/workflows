@@ -32,16 +32,20 @@ jobs:
           refspec_base: +${{ github.event.pull_request.base.sha }}:remotes/origin/${{ github.event.pull_request.base.ref }}
           refspec_pr: +${{ github.event.pull_request.head.sha }}:remotes/origin/${{ github.event.pull_request.head.ref }}
         run: |
-          # Fetch enough history to find a common ancestor commit (aka merge-base):
-          git fetch origin ${{ env.refspec_pr }} --depth=$(( ${{ github.event.pull_request.commits }} + 1 )) \
+          # Fetch enough history to find a common ancestor commit (aka
+          # merge-base):
+          git fetch origin ${{ env.refspec_pr }} \
+            --depth=$(( ${{ github.event.pull_request.commits }} + 1 )) \
             --no-tags --prune --no-recurse-submodules
 
-          # `actions/checkout` fetched a specific commit, not a branch (ref), so that commit was checked out in a
-          # detached HEAD state. Depending on what you do, you may want to additionally switch to the branch
-          # the refspec assigned the commit to in the prior fetch command:
+          # `actions/checkout` fetched a specific commit, not a branch (ref), so
+          # that commit was checked out in a detached HEAD state. We want to
+          # additionally switch to the branch the refspec assigned the commit to
+          # in the prior fetch command:
           git switch -c ${{ env.branch_pr }}
 
-          # This should get the oldest commit in the local fetched history (which may not be the commit the PR branched from):
+          # This should get the oldest commit in the local fetched history
+          # (which may not be the commit the PR branched from):
           COMMON_ANCESTOR=$( git rev-list --first-parent --max-parents=0 --max-count=1 ${{ env.branch_pr }} )
           DATE=$( git log --date=iso8601 --format=%cd "${COMMON_ANCESTOR}" )
 
