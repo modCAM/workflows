@@ -52,7 +52,7 @@ jobs:
         run: |
           version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
-            echo "VERSION file has changed! To restore the VERSION file, you need to...""
+            echo "VERSION file has changed! To restore the VERSION file, you need to..."
             echo "  git restore --source=\$(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION"
             echo "  git add VERSION"
             echo "  git commit -m \"Restore VERSION\""
