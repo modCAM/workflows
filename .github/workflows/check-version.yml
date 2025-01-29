@@ -27,7 +27,6 @@ jobs:
       # https://github.com/actions/checkout/issues/520#issuecomment-1167205721
       - name: Get branch history
         env:
-          branch_base: origin/${{ github.event.pull_request.base.ref }}
           branch_pr: origin/${{ github.event.pull_request.head.ref }}
           refspec_base: +${{ github.event.pull_request.base.sha }}:remotes/origin/${{ github.event.pull_request.base.ref }}
           refspec_pr: +${{ github.event.pull_request.head.sha }}:remotes/origin/${{ github.event.pull_request.head.ref }}
@@ -53,9 +52,9 @@ jobs:
         run: |
           version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
-            echo 'VERSION file has changed! To restore the VERSION file, you need to...'
-            echo '  git restore --source=$(git merge-base --fork-point main) -- VERSION'
-            echo '  git add VERSION'
-            echo '  git commit -m "Restore VERSION"'
+            echo "VERSION file has changed! To restore the VERSION file, you need to...""
+            echo "  git restore --source=\$(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION"
+            echo "  git add VERSION"
+            echo "  git commit -m \"Restore VERSION\""
           fi
           exit $version_changed
