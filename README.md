@@ -19,6 +19,12 @@ The CI workflow should run whenever changes are pushed to a pull request branch 
 
 A release should be created on 'main' after the CI tests pass.
 
+## check-version.yml
+
+Developers should not touch the VERSION file! It is automatically updated by a workflow when a branch is merged into 'main'.
+
+This workflow checks for changes made to the VERSION file. It should block changes made by the developer, but it should let changes pass if they were merged in from 'main'.
+
 ## Workflows
 
 Developer pushes to pull request branch --> build-and-test.yml
