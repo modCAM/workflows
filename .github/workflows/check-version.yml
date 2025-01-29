@@ -48,9 +48,9 @@ jobs:
 
       - name: Check version
         env:
-          branch_base: origin/${{ github.event.pull_request.base.ref }}
+          branch_base: ${{ github.event.pull_request.base.ref }}
         run: |
-          version_changed=$(git diff --quiet $(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION; echo $?)
+          version_changed=$(git diff --quiet $(git merge-base --fork-point origin/${{ env.branch_base }}) -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
             echo "VERSION file has changed! To restore the VERSION file, you need to..."
             echo "  git restore --source=\$(git merge-base --fork-point ${{ env.branch_base }}) -- VERSION"
