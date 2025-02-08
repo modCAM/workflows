@@ -1,0 +1,26 @@
+# Trigger the bindings project to create an issue when a new feature is added.
+
+name: Create code bindings issue for new algorithm
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create-issue:
+    name: Trigger bindings issue creation
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'bindings needed')
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GHA_WORKFLOW_TRIGGER }}
+          script: |
+            # const result = await github.rest.actions.createWorkflowDispatch({
+            #   owner: 'modCAM',
+            #   repo: 'issue_test',
+            #   workflow_id: 'new-feature-issue.yml',
+            #   ref: 'main'
+            # })
+            # console.log(result)
+            gh workflow run new-feature-issue.yml --repo modCAM/issue_test --ref main
