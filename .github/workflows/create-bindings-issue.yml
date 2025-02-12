@@ -21,10 +21,3 @@ jobs:
       - run: gh workflow run new-feature-issue.yml --repo modCAM/issue_test --ref main
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-# const result = await github.rest.actions.createWorkflowDispatch({
-#   owner: 'modCAM',
-#   repo: 'issue_test',
-#   workflow_id: 'new-feature-issue.yml',
-#   ref: 'main'
-# })
-# console.log(result)
