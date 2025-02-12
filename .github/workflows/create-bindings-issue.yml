@@ -18,13 +18,11 @@ jobs:
           app-id: ${{ vars.ISSUE_BOT_APP_ID }}
           private-key: ${{ secrets.ISSUE_BOT_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - run: gh workflow run new-feature-issue.yml --repo modCAM/issue_test --ref main
+      - run: >
+          gh issue create 
+            --title "New algorithm"
+            --body "Need bindings for new algorithm."
+            --label "bindings needed"
+            --repo modCAM/issue_test
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-# const result = await github.rest.actions.createWorkflowDispatch({
-#   owner: 'modCAM',
-#   repo: 'issue_test',
-#   workflow_id: 'new-feature-issue.yml',
-#   ref: 'main'
-# })
-# console.log(result)
