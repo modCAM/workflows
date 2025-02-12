@@ -24,5 +24,6 @@ jobs:
             --body "Need bindings for new algorithm."
             --label "bindings needed"
             --repo modCAM/issue_test
+            # --assignee <login>
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
