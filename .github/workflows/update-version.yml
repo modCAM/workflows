@@ -8,6 +8,7 @@
 name: Update version
 
 on:
+  merge_group:
   push:
     branches: [main]
     paths: [include, packaging, src]
