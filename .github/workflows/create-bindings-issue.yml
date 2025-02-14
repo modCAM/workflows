@@ -18,8 +18,13 @@ jobs:
           app-id: ${{ vars.ISSUE_BOT_APP_ID }}
           private-key: ${{ secrets.ISSUE_BOT_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - run: |
-          gh issue create --repo $ORG/issue_test --title "$ISSUE_TITLE" --body "Need bindings for PR $REPO/pull/$PR_NUMBER" --label "bindings needed" --assignee "prosilio,$PR_AUTHOR"
+      - run: >
+          gh issue create 
+          --repo $ORG/issue_test 
+          --title "$ISSUE_TITLE" 
+          --body "Need bindings for PR $REPO/pull/$PR_NUMBER" 
+          --label "bindings needed" 
+          --assignee "prosilio,$PR_AUTHOR"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           ISSUE_TITLE: ${{ github.event.pull_request.title }}
