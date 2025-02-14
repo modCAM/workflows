@@ -1,0 +1,7 @@
+# Label pull requests based on branch names
+# feature -> enhancement
+# refactor -> enhancement
+# bugfix/bug -> bug
+# docs -> documentation
+# new-algo -> bindings needed
+
