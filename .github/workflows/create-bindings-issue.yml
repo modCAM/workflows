@@ -18,6 +18,9 @@ jobs:
           app-id: ${{ vars.ISSUE_BOT_APP_ID }}
           private-key: ${{ secrets.ISSUE_BOT_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - run: gh issue create --title "New algorithm" --body "Need bindings for new algorithm." --label "bindings needed" --repo modCAM/issue_test # --assignee <login>
+      - run: gh issue create --repo modCAM/issue_test --title "$ISSUE_TITLE" --body "Need bindings for PR $PR_URL" --label "bindings needed" --assignee "prosilio,$PR_AUTHOR"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
