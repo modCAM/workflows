@@ -14,9 +14,6 @@ on:
     workflows: [Update version]
     types: [completed]
     branches: [main]
-  push:
-    branches: [main]
-    paths: [VERSION]
   pull_request:
     paths-ignore: [LICENSE, README.md, VERSION]
 
