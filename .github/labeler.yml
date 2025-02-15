@@ -1,7 +1,13 @@
 # Label pull requests based on branch names
-# feature -> enhancement
-# refactor -> enhancement
-# bugfix/bug -> bug
-# docs -> documentation
-# new-algo -> bindings needed
 
+enhancement:
+  - head-branch: ["^feature/", "^new-algo/", "^refactor/"]
+
+"bindings needed":
+  - head-branch: ["^new-algo/"]
+
+bug:
+  - head-branch: ["^bug/", "^bugfix"]
+
+documentation:
+  - head-branch: ["^docs/"]
