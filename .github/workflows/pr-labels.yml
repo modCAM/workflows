@@ -2,6 +2,9 @@ name: Pull request labels
 
 on:
   pull_request_target:
+    types:
+      - opened
+      - reopened
 
 jobs:
   labeler:
