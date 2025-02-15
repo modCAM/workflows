@@ -15,11 +15,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'include/**'
-      - 'packaging/**'
-      - 'src/**'
-      - '!VERSION'
+    paths-ignore:
+      - "VERSION"
 
 env:
   VERSION_FILE: VERSION
