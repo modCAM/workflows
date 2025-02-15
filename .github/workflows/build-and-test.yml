@@ -10,12 +10,16 @@
 name: Build and test
 
 on:
-  workflow_run:
-    workflows: [Update version]
-    types: [completed]
-    branches: [main]
+  push:
+    branches:
+      - main
+    paths:
+      - VERSION
   pull_request:
-    paths-ignore: [LICENSE, README.md, VERSION]
+    paths-ignore:
+      - LICENSE
+      - README.md
+      - VERSION
 
 env:
   VERSION_FILE: VERSION

@@ -66,14 +66,12 @@ jobs:
           fi
 
       - name: Update version
-        run: |
-          echo "${{ env.version_changed }}"
-          cmake -P ./cmake/update_version.cmake
+        if: env.version_changed == 'false'
+        run: cmake -P ./cmake/update_version.cmake
 
       - name: Commit new version
         if: env.version_changed == 'false'
         run: |
-          echo "${{ github.event.commits[0].author.name }}"
           git config user.name 'modcam-version-update[bot]'
           git config user.email '199305358+modcam-version-update[bot]@users.noreply.github.com'
           version="$(< $VERSION_FILE)"
