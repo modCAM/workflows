@@ -35,8 +35,8 @@ env:
   VERSION_FILE: VERSION
 
 jobs:
-  check-version:
-    name: Check version
+  update-version:
+    name: Update version
     runs-on: ubuntu-latest
     permissions:
       contents: none
@@ -60,25 +60,17 @@ jobs:
         run: |
           version_changed=$(git diff --quiet HEAD~1 HEAD -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
-            echo "::set-output name=version_changed::true"
+            echo "version_changed=true" >> $GITHUB_ENV
           else
-            echo "::set-output name=version_changed::false"
+            echo "version_changed=false" >> $GITHUB_ENV
           fi
 
-  update-version:
-    name: Update version
-    runs-on: ubuntu-latest
-    needs: [check-version]
-    if: "!needs.check-version.outputs.version_changed"
-    permissions:
-      contents: none
-
-    steps:
-      - run: git status
       - name: Update version
+        if: env.version_changed == false
         run: cmake -P ./cmake/update_version.cmake
 
       - name: Commit new version
+        if: env.version_changed == false
         run: |
           echo "${{ github.event.commits[0].author.name }}"
           git config user.name 'modcam-version-update[bot]'
