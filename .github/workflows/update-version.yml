@@ -37,8 +37,6 @@ env:
 jobs:
   update-version:
     name: Update version
-  update-version:
-    name: Update version
     runs-on: ubuntu-latest
     permissions:
       contents: none
@@ -63,11 +61,7 @@ jobs:
           version_changed=$(git diff --quiet HEAD~1 HEAD -- VERSION; echo $?)
           if [ $version_changed -ne 0 ]; then
             echo "version_changed=true" >> $GITHUB_ENV
-            echo "version_changed=true" >> $GITHUB_ENV
           else
-            echo "version_changed=false" >> $GITHUB_ENV
-          fi
-
             echo "version_changed=false" >> $GITHUB_ENV
           fi
 
