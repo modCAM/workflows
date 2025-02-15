@@ -66,8 +66,9 @@ jobs:
           fi
 
       - name: Update version
-        if: env.version_changed == false
-        run: cmake -P ./cmake/update_version.cmake
+        run: |
+          echo "${{ env.version_changed }}"
+          cmake -P ./cmake/update_version.cmake
 
       - name: Commit new version
         if: env.version_changed == false
