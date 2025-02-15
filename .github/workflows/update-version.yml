@@ -8,6 +8,16 @@
 # WARNING: It's very easy to trigger an infinite workflow loop, as this workflow
 # pushes to 'main', and it is itself triggered by pushes to 'main'. We avoid
 # this situation with careful path filtering.
+#
+# I should be able to ignore any pushes that change 'VERSION' via the following
+# filter:
+#   paths:
+#     - 'include/**'
+#     - 'packaging/**'
+#     - 'src/**'
+#     - '!VERSION'
+# However, there is a known issue with files in the paths filter:
+# https://github.com/actions/runner/issues/2324
 
 name: Update version
 
@@ -15,8 +25,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "./VERSION"
 
 env:
   VERSION_FILE: VERSION
@@ -47,6 +55,7 @@ jobs:
 
       - name: Commit new version
         run: |
+          echo "${{ github.event.commits[0].author.name }}"
           git config user.name 'modcam-version-update[bot]'
           git config user.email '199305358+modcam-version-update[bot]@users.noreply.github.com'
           version="$(< $VERSION_FILE)"
