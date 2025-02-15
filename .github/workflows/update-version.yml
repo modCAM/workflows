@@ -13,12 +13,13 @@ name: Update version
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - "include/**"
-      - "packaging/**"
-      - "src/**"
-      - "!VERSION"
+      - 'include/**'
+      - 'packaging/**'
+      - 'src/**'
+      - '!VERSION'
 
 env:
   VERSION_FILE: VERSION
