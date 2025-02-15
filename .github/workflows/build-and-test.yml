@@ -16,10 +16,16 @@ on:
     paths:
       - VERSION
   pull_request:
-    paths-ignore:
-      - LICENSE
-      - README.md
-      - VERSION
+    paths:
+      - "**"
+      - "!.github/**"
+      - ".github/workflows/build-and-test.yml"
+      - "!docs/**"
+      - "!.clang-format"
+      - "!.gitignore"
+      - "!LICENSE"
+      - "!README.md"
+      - "!VERSION"
 
 env:
   VERSION_FILE: VERSION
