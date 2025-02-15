@@ -4,13 +4,21 @@
 # - update the VERSION file,
 # - amend the last commit to include the bumped VERSION file, and
 # - tag that commit with the new version.
+#
+# WARNING: It's very easy to trigger an infinite workflow loop, as this workflow
+# pushes to 'main', and it is itself triggered by pushes to 'main'. We avoid
+# this situation with careful path filtering.
 
 name: Update version
 
 on:
   push:
     branches: [main]
-    paths: [include/**, packaging/**, src/**]
+    paths:
+      - "include/**"
+      - "packaging/**"
+      - "src/**"
+      - "!VERSION"
 
 env:
   VERSION_FILE: VERSION
