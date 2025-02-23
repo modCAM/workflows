@@ -42,6 +42,6 @@ jobs:
           ref_name: ${{ github.ref_name }}
           default_branch: ${{ github.event.repository.default_branch }}
         run: |
-          echo "github.ref = env.ref"
-          echo "github.ref_name = env.ref_name"
-          echo "github.event.repository.default_branch = env.default_branch"
+          echo "github.ref = ${{ env.ref }}"
+          echo "github.ref_name = ${{ env.ref_name }}"
+          echo "github.event.repository.default_branch = ${{ env.default_branch }}"
