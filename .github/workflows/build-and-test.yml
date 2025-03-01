@@ -6,8 +6,10 @@
 # - build the code,
 # - run linting checks, and
 # - run unit tests.
+#
+# A release should be created on 'main' after tests pass.
 
-name: Build and test
+name: Continuous integration
 
 on:
   push:
@@ -32,16 +34,51 @@ env:
 
 jobs:
   build-and-test:
-    name: Build and test
+    name: Build and test on ${{ matrix.config.name }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Echo
-        env:
-          ref: ${{ github.ref }}
-          ref_name: ${{ github.ref_name }}
-          default_branch: ${{ github.event.repository.default_branch }}
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
         run: |
-          echo "github.ref = ${{ env.ref }}"
-          echo "github.ref_name = ${{ env.ref_name }}"
-          echo "github.event.repository.default_branch = ${{ env.default_branch }}"
+          mkdir -p build/package-artifacts
+          cp src/test.txt build/
+
+      - name: Package
+        id: package
+        if: github.ref_name == github.event.repository.default_branch
+        run: |
+          cp src/test.txt build/package-artifacts/
+
+      - name: Upload package artifacts
+        if: steps.package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-test
+          path: build/package-artifacts/*.*
+          retention-days: 5
+
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    needs: [build-and-test]
+    if: github.ref_name == github.event.repository.default_branch
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download package artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: package-artifacts
+          merge-multiple: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version="$(< $VERSION_FILE)"
+          gh release create $version ./package-artifacts/*.txt
