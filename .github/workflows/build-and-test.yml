@@ -34,7 +34,7 @@ env:
 
 jobs:
   build-and-test:
-    name: Build and test on ${{ matrix.config.name }}
+    name: Build and test
     runs-on: ubuntu-latest
 
     steps:
@@ -64,17 +64,17 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     needs: [build-and-test]
-    # if: github.ref_name == github.event.repository.default_branch
+    if: github.ref_name == github.event.repository.default_branch
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Download package artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     path: package-artifacts
-      #     merge-multiple: true
+      - name: Download package artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: package-artifacts
+          merge-multiple: true
 
       - name: Create release
         env:
@@ -82,4 +82,4 @@ jobs:
         run: |
           version="$(< ${{ env.VERSION_FILE }})"
           echo $version
-          # gh release create $version ./package-artifacts/*.txt
+          gh release create $version ./package-artifacts/*.txt
