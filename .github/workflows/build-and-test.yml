@@ -43,7 +43,7 @@ jobs:
 
       - name: Build
         run: |
-          mkdir build/package-artifacts
+          mkdir -p build/package-artifacts
           cp src/test.txt build/
 
       - name: Package
