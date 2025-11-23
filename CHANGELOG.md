@@ -1,6 +1,6 @@
 # Changelog
 
-## [2025.11.23] ([#194](https://github.com/modCAM/modcam/pull/1))
+## [2025.11.23.3] ([#194](https://github.com/modCAM/modcam/pull/1))
 
 _Initial release._
 
@@ -10,6 +10,4 @@ _Initial release._
 - Per-vertex basis
 - Per-vertex normals
 
-[2025.11.23]: https://github.com/modCAM/modcam/releases/tag/2025.11.23
-[2025.11.23.1]: https://github.com/modCAM/modcam/releases/tag/2025.11.23.1
-[2025.11.23.2]: https://github.com/modCAM/modcam/releases/tag/2025.11.23.2
+[2025.11.23.3]: https://github.com/modCAM/modcam/releases/tag/2025.11.23.3
