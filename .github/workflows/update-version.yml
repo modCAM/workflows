@@ -18,7 +18,10 @@
 #     - '!VERSION'
 # However, there is a known issue with the paths filter:
 # https://github.com/actions/runner/issues/2324. The workaround is to add a step
-# that checks if VERSION was changed.
+# that checks if VERSION was changed. This solution has the unfortunate
+# consequence that this workflow is run twice, once to bump the version, and
+# again when the updated VERSION file is pushed to 'main'. On the second round,
+# though, the check prevents further workflow runs.
 
 name: Update version
 
@@ -67,7 +70,9 @@ jobs:
 
       - name: Update version
         if: env.version_changed == 'false'
-        run: cmake -P ./cmake/update_version.cmake
+        run: |
+          cmake -P ./cmake/update_version.cmake
+          python ./tools/changelog.py
 
       - name: Commit new version
         if: env.version_changed == 'false'
@@ -76,7 +81,7 @@ jobs:
           git config user.email '199305358+modcam-version-update[bot]@users.noreply.github.com'
           version="$(< $VERSION_FILE)"
           echo "New version: $version"
-          git add $VERSION_FILE
+          git add $VERSION_FILE CHANGELOG.md
           git commit --amend --no-edit
           git tag -a $version -m "$version"
           git push origin main --follow-tags --force

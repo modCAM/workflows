@@ -1,4 +1,4 @@
-# Trigger the bindings project to create an issue when a new feature is added.
+# Create an issue in the code bindings projects when a new feature is added.
 
 name: Create code bindings issue for new algorithm
 
@@ -18,9 +18,10 @@ jobs:
           app-id: ${{ vars.ISSUE_BOT_APP_ID }}
           private-key: ${{ secrets.ISSUE_BOT_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
+
       - run: >
           gh issue create 
-          --repo $ORG/issue_test 
+          --repo $ORG/modcam-python 
           --title "$ISSUE_TITLE" 
           --body "Need bindings for PR $REPO/pull/$PR_NUMBER" 
           --label "bindings needed" 
