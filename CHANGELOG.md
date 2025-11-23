@@ -11,3 +11,4 @@ _Initial release._
 - Per-vertex normals
 
 [2025.11.23]: https://github.com/modCAM/modcam/releases/tag/2025.11.23
+[2025.11.23.1]: https://github.com/modCAM/modcam/releases/tag/2025.11.23.1
