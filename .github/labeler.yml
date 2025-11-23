@@ -7,7 +7,7 @@ enhancement:
   - head-branch: ["^new-algo/"]
 
 bug:
-  - head-branch: ["^bug/", "^bugfix"]
+  - head-branch: ["^bug/", "^bugfix/", "^debug/"]
 
 documentation:
   - head-branch: ["^docs/"]

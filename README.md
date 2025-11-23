@@ -1,40 +1,81 @@
-## update-version.yml
+# modCAM
 
-The version should be updated whenever changes are made to 'main'. To update the version, this workflow should
-- checkout the code,
-- update the VERSION file,
-- amend the last commit to include the bumped VERSION file, and
-- tag that commit with the new version.
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/modCAM/modcam/badge)](https://scorecard.dev/viewer/?uri=github.com/modCAM/modcam)
 
-## build-and-test.yml
+ModCAM is free and open source software for computer aided manufacturing (CAM) research. It is a library of algorithms for the control of manufacturing machinery, such as CNC lathes and mills and 3D printers.
 
-The CI workflow should run whenever changes are pushed to a pull request branch or to 'main'. For any changes pushed to 'main', the CI workflow should only run after a version update. This workflow should
-- set up the build environment (use a container?),
-- checkout the code,
-- build the code,
-- run linting checks, and
-- run unit tests.
+## The vision
 
-## create-release.yml
+ModCAM's goal is to make the development of new CAM algorithms easier by providing a library of existing algorithms to build from and by giving researchers a place to share their code. The goal is to automate additive and, especially, subtractive manufacturing, making these fields more accessible for both professionals and hobbyists.
 
-A release should be created on 'main' after the CI tests pass.
+## Features
 
-## check-version.yml
+### Algorithms
 
-Developers should not touch the VERSION file! It is automatically updated by a workflow when a branch is merged into 'main'.
+At this early stage, there's not much here. You can help by [contributing](docs/CONTRIBUTING.rst) algorithms that you want. Planned features include
 
-This workflow checks for changes made to the VERSION file. It should block changes made by the developer, but it should let changes pass if they were merged in from 'main'.
+  - algorithms for 2- to 5-axis machines
+  - manufacturability analysis
+  - workpiece setup
+  - machining feature extraction
+  - roughing machining tool path planning
+  - finish machining tool path planning
+  - machine control/G-code generation
 
-## Workflows
+### Bindings to other languages
 
-Developer pushes to pull request branch --> build-and-test.yml
+Not everyone loves to write, compile, and (inevitably) debug C++ code, so modCAM has Python bindings to enable easier prototyping of your own algorithms (which we hope you [share](docs/CONTRIBUTING.rst) with the community). If you want to add other language bindings it would be greatly appreciated! Please open an [issue](https://github.com/modCAM/modcam/issues) pointing to your bindings.
 
-Developer pushes to 'main' --> update-version.yml --> build-and-test.yml --> create-release.yml
+## Documentation
 
-## Merge conflicts
+For tutorials and further information about the project in general, see the project main page on [readthedocs]().
 
-Committing new versions in update-version.yml may lead to conflicting commits if we try to merge two pull requests at the same time. [Concurrency groups](https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#concurrency) won't work: 
+For a technical reference guide to the modCAM functions, see the [C++ reference page]().
 
-> When a concurrent job or workflow is queued, if another job or workflow using the same concurrency group in the repository is in progress, the queued job or workflow will be pending. Any existing pending job or workflow in the same concurrency group, if it exists, will be canceled and the new queued job or workflow will take its place.
+## Getting started
 
-I should investigate merge queues.
+To use modCAM in your own project, see the [example project](https://github.com/modCAM/cmake-example), which shows you how to build a CMake-based project that retrieves modCAM with FetchContent.
+
+## Build from source
+
+ModCAM has the following dependencies:
+
+- [Eigen](https://libeigen.gitlab.io/)
+- [libigl](https://libigl.github.io/)
+- [doctest](https://github.com/doctest/doctest) (unit tests)
+- [Doxygen](https://www.doxygen.nl/) (documentation)
+- [Sphinx](https://www.sphinx-doc.org/) (documentation)
+
+The CMake presets supplied with this project use [vcpkg](https://vcpkg.io/) to install the dependencies.
+
+To build and install modCAM, do
+
+```
+git clone 
+cd modcam
+cmake -S . -D CMAKE_BUILD_TYPE=Release --preset build-minimal
+cmake --build build/
+cmake --install build/ --prefix build/modcam
+```
+
+For more build options, see [CONTRIBUTING.rst](docs/CONTRIBUTING.rst).
+
+## Communication channels
+
+Questions about usage can be asked in [Discussions](https://github.com/modCAM/modcam/discussions).
+
+For bug reports or enhancement suggestions, create an [Issue](https://github.com/modCAM/modcam/issues).
+
+To report vulnerabilities, see [SECURITY.md](https://github.com/modCAM/modcam?tab=security-ov-file).
+
+For private communication, email modCAM.github@proton.me.
+
+All interactions with the modCAM community are expected to follow the [Code of conduct](https://github.com/modCAM/modcam?tab=coc-ov-file#).
+
+## Contributing
+
+Enhancements and bug fixes are welcome. For instructions on how to contribute, see [CONTRIBUTING.rst](docs/CONTRIBUTING.rst).
+
+## License
+
+ModCAM is licensed under the [Mozilla Public License Version 2.0](LICENSE).
