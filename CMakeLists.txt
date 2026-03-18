@@ -11,50 +11,43 @@
 cmake_minimum_required(VERSION 4.0)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/tools/cmake")
-include(modcam_version)
 
 project(
-    modCAM
-    DESCRIPTION "Open source software for Computer Aided Manufacturing (CAM) research"
-	VERSION ${modCAM_VRSN}
-    LANGUAGES CXX
+	modCAM_python
+	DESCRIPTION "Python bindings for the modCAM Computer Aided Manufacturing (CAM) research software"
+	LANGUAGES CXX
 )
 
+if (NOT SKBUILD)
+	message(WARNING "\
+	This CMake file is meant to be executed using 'scikit-build'. Running
+	it directly will almost certainly not produce the desired result. If
+	you are a user trying to install this package, please use the command
+	below, which will install all necessary build dependencies, compile
+	the package in an isolated environment, and then install it.
+	=====================================================================
+	$ pip install .
+	=====================================================================
+	If you are a software developer, and this is your own package, then
+	it is usually much more efficient to install the build dependencies
+	in your environment once and use the following command that avoids
+	a costly creation of a new virtual environment at every compilation:
+	=====================================================================
+	$ pip install nanobind scikit-build-core[pyproject]
+	$ pip install --no-build-isolation -ve .
+	=====================================================================
+	You may optionally add -Ceditable.rebuild=true to auto-rebuild when
+	the package is imported. Otherwise, you need to re-run the above
+	after editing C++ files.")
+endif()
+
 # Helpful CMake modules
-include(CMakeDependentOption)
-include(CMakeRC)
-include(FetchContent)
 include(GNUInstallDirs)
 
 # Require out-of-source builds
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
 if(PROJECT_IS_TOP_LEVEL AND EXISTS "${LOC_PATH}")
-    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build directory. Feel free to remove CMakeCache.txt and CMakeFiles.")
-endif()
-
-# Project options
-option(MODCAM_BUILD_DOC "Build documentation" OFF)
-option(MODCAM_ENABLE_TESTING "Build tests" OFF)
-option(MODCAM_ENABLE_LINTING "Run static analysis checks" OFF)
-cmake_dependent_option(
-	MODCAM_BUILD_PROJECT
-	"Compile the code. Turn off to build only the documentation." ON
-	"MODCAM_BUILD_DOC AND NOT MODCAM_ENABLE_TESTING AND NOT MODCAM_ENABLE_LINTING" ON
-)
-cmake_dependent_option(
-	MODCAM_FORCE_VIRTUAL_ENV
-	"Throw an error if a Python virtual environment is not active." ON
-	"MODCAM_BUILD_DOC" ON
-) # The documentation is built by Sphinx, which requires certain Python
-  # packages. We only force the installation of those packages when building the
-  # documentation. See cmake/modcam_dependencies.cmake.
-
-# Documentation
-if(MODCAM_BUILD_DOC)
-    add_subdirectory(docs)
-endif()
-if(NOT MODCAM_BUILD_PROJECT)
-	return() # Build only the documentation and nothing else.
+	message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build directory. Feel free to remove CMakeCache.txt and CMakeFiles.")
 endif()
 
 # Require a minimum C++ standard, but let a parent project ask for something
@@ -76,131 +69,33 @@ if(NOT DEFINED CMAKE_CXX_EXTENSIONS)
 	set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
-# All dependencies here
-include(modcam_dependencies)
+# Dependencies
+find_package(Eigen3 REQUIRED NO_MODULE)
+find_package(libigl CONFIG REQUIRED)
 
-# Linting/static analysis
-if(MODCAM_ENABLE_LINTING)
-	set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-
-	if(NOT CLANG_TIDY_EXECUTABLE)
-		find_program(
-			CLANG_TIDY_EXECUTABLE
-			NAMES
-				clang-tidy
-				clang-tidy-21
-				clang-tidy-20
-				clang-tidy-19
-				clang-tidy-18
-				clang-tidy-17
-				clang-tidy-16
-				clang-tidy-15
-		)
-		if (NOT CLANG_TIDY_EXECUTABLE)
-			string(
-				CONCAT CLANG_TIDY_ERR_MSG
-				"clang-tidy was not found. Please specify the path to "
-				"clang-tidy as a command line argument:\n"
-				"    -D CLANG_TIDY_EXECUTABLE=/path/to/clang-tidy"
-			)
-			message(FATAL_ERROR ${CLANG_TIDY_ERR_MSG})
-		endif()
-	endif()
-
-	# set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXECUTABLE} -p ${CMAKE_BINARY_DIR})
-	set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXECUTABLE} -p ${CMAKE_BINARY_DIR})
-	configure_file(.clang-tidy .clang-tidy COPYONLY)
-
-	if(NOT RUN_CLANG_TIDY_EXECUTABLE)
-		find_program(
-			RUN_CLANG_TIDY_EXECUTABLE
-			NAMES
-				run-clang-tidy
-				run-clang-tidy-21
-				run-clang-tidy-20
-				run-clang-tidy-19
-				run-clang-tidy-18
-				run-clang-tidy-17
-				run-clang-tidy-16
-				run-clang-tidy-15
-		)
-		if (NOT RUN_CLANG_TIDY_EXECUTABLE)
-			string(
-				CONCAT RUN_CLANG_TIDY_ERR_MSG
-				"run-clang-tidy was not found. Please specify the path to "
-				"run-clang-tidy as a command line argument:\n"
-				"    -D RUN_CLANG_TIDY_EXECUTABLE=/path/to/run-clang-tidy"
-			)
-			message(FATAL_ERROR ${RUN_CLANG_TIDY_ERR_MSG})
-		endif()
-	endif()
-
-	add_custom_target(
-		run-clang-tidy ALL
-		COMMAND ${RUN_CLANG_TIDY_EXECUTABLE}
-			-clang-tidy-binary ${CLANG_TIDY_EXECUTABLE}
-			-p ${CMAKE_BINARY_DIR}
-			-warnings-as-errors '*'
-	)
-endif()
-
-# Project data
-# The data may include rather large files such as triangle meshes, so they are 
-# only included if necessary.
-if(MODCAM_ENABLE_TESTING) # Further conditions may be added in the future.
-	add_subdirectory(data)
-endif()
-
-# Tests
-# The test_modcam target is available for adding unit tests.
-if(MODCAM_ENABLE_TESTING)
-	enable_testing()
-    add_subdirectory(tests)
-endif()
+include(zero_pad_version)
+zero_pad_version(${SKBUILD_PROJECT_VERSION} version_tag)
+include(FetchContent)
+FetchContent_Declare(
+    modCAM
+    GIT_REPOSITORY https://github.com/modCAM/modcam.git
+	GIT_TAG "${version_tag}"
+	GIT_SHALLOW TRUE
+	GIT_PROGRESS TRUE
+	FIND_PACKAGE_ARGS
+)
+FetchContent_MakeAvailable(modCAM)
+find_package(
+	Python 3.9
+	REQUIRED COMPONENTS Development.Module
+	OPTIONAL_COMPONENTS Development.SABIModule
+)
+execute_process(
+	COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+	OUTPUT_VARIABLE nanobind_ROOT
+)
+find_package(nanobind CONFIG REQUIRED)
 
 # Project files
 add_subdirectory(src)
-
-# Packaging
-# Allow package maintainers to freely override the path for the configs
-set(MODCAM_INSTALL_CMAKEDIR "share/cmake/modCAM"
-	CACHE PATH "CMake package config location"
-)
-mark_as_advanced(MODCAM_INSTALL_CMAKEDIR)
-
-install(
-	EXPORT modCAM_Targets
-	DESTINATION "${MODCAM_INSTALL_CMAKEDIR}"
-	NAMESPACE modCAM::
-	FILE modCAM-Targets.cmake
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/modCAMConfigVersion.cmake"
-	COMPATIBILITY AnyNewerVersion
-	ARCH_INDEPENDENT
-)
-
-install(
-	FILES
-		"${CMAKE_CURRENT_LIST_DIR}/tools/cmake/modCAMConfig.cmake"
-		"${CMAKE_CURRENT_BINARY_DIR}/modCAMConfigVersion.cmake"
-	DESTINATION "${MODCAM_INSTALL_CMAKEDIR}"
-)
-
-# Install the VERSION file for other projects to reference
-install(
-	FILES "${modCAM_SOURCE_DIR}/VERSION"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
-
-if(PROJECT_IS_TOP_LEVEL)
-	add_subdirectory(tools/packaging)
-else()
-	mark_as_advanced(MODCAM_BUILD_DOC)
-	mark_as_advanced(MODCAM_ENABLE_TESTING)
-	mark_as_advanced(MODCAM_ENABLE_LINTING)
-	mark_as_advanced(MODCAM_BUILD_PROJECT)
-	mark_as_advanced(MODCAM_FORCE_VIRTUAL_ENV)
-endif()

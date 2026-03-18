@@ -1,0 +1,44 @@
+version: 2
+
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: true
+
+build:
+  os: "ubuntu-24.04"
+  tools:
+    python: "3.13"
+  apt_packages:
+    # C++ tools
+    - build-essential
+    - ninja-build
+    # Eigen
+    - pkg-config
+    # vcpkg
+    - curl
+    - git
+    - tar
+    - unzip
+    - zip
+  jobs:
+    pre_create_environment:
+      # uv
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
+      # CMake
+      - curl --silent --show-error --fail
+        -L https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.sh
+        --output /root/cmake.sh
+      - chmod u+x /root/cmake.sh
+      - /root/cmake.sh --prefix=/usr/local --skip-license
+      # vcpkg
+      - git clone https://github.com/microsoft/vcpkg.git /root/vcpkg
+      - /root/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+    create_environment:
+      - uv venv --managed-python --python 3.13 "${READTHEDOCS_VIRTUALENV_PATH}"
+    install:
+      - VCPKG_ROOT=/root/vcpkg
+        PATH=$VCPKG_ROOT:$PATH
+        UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}"
+        uv sync --frozen --link-mode=copy --all-extras --dev --group docs --config-setting=cmake.args="--preset vcpkg"
