@@ -1,0 +1,37 @@
+name: Create release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - pyproject.toml # We need to update the version to trigger a release.
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: ${{ github.ref_name == github.event.repository.default_branch && github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.9.21"
+          enable-cache: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "$(uv version --short)"
+          --generate-notes
+          --fail-on-no-commits
