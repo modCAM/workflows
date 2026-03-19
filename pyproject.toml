@@ -130,7 +130,7 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 
 [tool.cibuildwheel.windows]
 before-all = [
-    "SET VCPKG_ROOT",
+    "echo %VCPKG_ROOT%",
     "git clone https://github.com/microsoft/vcpkg.git",
     "cmd /c \".\\vcpkg\\bootstrap-vcpkg.bat -disableMetrics\"",
     "dir",
