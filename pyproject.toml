@@ -134,8 +134,10 @@ before-all = [
     "echo %PATH%",
     "git clone https://github.com/microsoft/vcpkg.git",
     "cmd /c \".\\vcpkg\\bootstrap-vcpkg.bat -disableMetrics\"",
+    "dir",
+    "dir /S vcpkg",
 ]
-environment = { VCPKG_ROOT="%cd%\\vcpkg", PATH="%VCPKG_ROOT%;%PATH%" }
+environment = { VCPKG_ROOT="D:\\a\\workflows\\workflows\\vcpkg", PATH="$VCPKG_ROOT;$PATH" }
 
 
 [[tool.cibuildwheel.overrides]]
