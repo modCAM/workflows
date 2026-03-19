@@ -131,12 +131,10 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 [tool.cibuildwheel.windows]
 before-all = [
     "echo %VCPKG_ROOT%",
-    "echo %PATH%",
-    "git clone https://github.com/microsoft/vcpkg.git",
-    "cmd /c \".\\vcpkg\\bootstrap-vcpkg.bat -disableMetrics\"",
-    "dir",
+    'git clone https://github.com/microsoft/vcpkg.git C:\\vcpkg',
+    "cmd /c \"C:\\vcpkg\\bootstrap-vcpkg.bat -disableMetrics\"",
 ]
-environment = { VCPKG_ROOT='D:\\a\\workflows\\workflows\\vcpkg', PATH="$VCPKG_ROOT;$PATH" }
+environment = { VCPKG_ROOT='C:\\vcpkg', PATH="$VCPKG_ROOT;$PATH" }
 
 
 [[tool.cibuildwheel.overrides]]
