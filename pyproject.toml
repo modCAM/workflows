@@ -130,7 +130,7 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 
 [tool.cibuildwheel.windows]
 before-all = [
-    "Get-ChildItem -Path .",
+    "dir",
 ]
 environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH" }
 
