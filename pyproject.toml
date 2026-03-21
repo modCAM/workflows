@@ -111,48 +111,44 @@ manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.linux]
 before-all = [
-    "yum install -y clang curl zip unzip tar",
-    "git clone https://github.com/microsoft/vcpkg.git",
-    "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
+    "echo $PATH",
+    "vcpkg --version",
 ]
 [tool.cibuildwheel.linux.environment]
 CC="clang"
 CXX="clang++"
-VCPKG_ROOT="$(pwd)/vcpkg"
-PATH="$VCPKG_ROOT:$PATH"
 
 [tool.cibuildwheel.macos]
 before-all = [
-    "git clone https://github.com/microsoft/vcpkg.git",
-    "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
+    "echo $PATH",
+    "vcpkg --version",
 ]
-environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPLOYMENT_TARGET="10.15" }
+environment = { MACOSX_DEPLOYMENT_TARGET="10.15" }
 
 [tool.cibuildwheel.windows]
 before-all = [
-    "echo %VCPKG_ROOT%",
-    "cmd /c \"C:\\vcpkg\\bootstrap-vcpkg.bat -disableMetrics\"",
+    "echo %PATH%",
+    "vcpkg --version",
 ]
-environment = { VCPKG_ROOT='C:\\vcpkg', PATH="$VCPKG_ROOT;$PATH" }
 
 
-[[tool.cibuildwheel.overrides]]
-select = "*-musllinux*"
-before-all = [
-    "apk add build-base clang cmake curl git ninja tar zip unzip",
-    "git clone https://github.com/microsoft/vcpkg.git",
-    "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
-]
-inherit.environment = "append"
-environment.VCPKG_FORCE_SYSTEM_BINARIES="1"
-
-# This is a workaround until [vcpkg issue #1922](https://github.com/microsoft/vcpkg-tool/issues/1922)
-# is fixed.
-[[tool.cibuildwheel.overrides]]
-select = "*-musllinux_aarch64"
-before-all = [
-    "apk add build-base clang cmake curl git ninja tar zip unzip",
-    "git clone https://github.com/microsoft/vcpkg.git",
-    "curl -L -o $(pwd)/vcpkg/scripts/vcpkg-tool-metadata.txt https://raw.githubusercontent.com/microsoft/vcpkg/be2e197ea5bc32028dad3c651053ed926d91a2d7/scripts/vcpkg-tool-metadata.txt",
-    "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
-]
+# [[tool.cibuildwheel.overrides]]
+# select = "*-musllinux*"
+# before-all = [
+#     "apk add build-base clang cmake curl git ninja tar zip unzip",
+#     "git clone https://github.com/microsoft/vcpkg.git",
+#     "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
+# ]
+# inherit.environment = "append"
+# environment.VCPKG_FORCE_SYSTEM_BINARIES="1"
+# 
+# # This is a workaround until [vcpkg issue #1922](https://github.com/microsoft/vcpkg-tool/issues/1922)
+# # is fixed.
+# [[tool.cibuildwheel.overrides]]
+# select = "*-musllinux_aarch64"
+# before-all = [
+#     "apk add build-base clang cmake curl git ninja tar zip unzip",
+#     "git clone https://github.com/microsoft/vcpkg.git",
+#     "curl -L -o $(pwd)/vcpkg/scripts/vcpkg-tool-metadata.txt https://raw.githubusercontent.com/microsoft/vcpkg/be2e197ea5bc32028dad3c651053ed926d91a2d7/scripts/vcpkg-tool-metadata.txt",
+#     "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
+# ]
