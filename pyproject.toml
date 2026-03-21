@@ -112,16 +112,20 @@ manylinux-aarch64-image = "manylinux_2_28"
 [tool.cibuildwheel.linux]
 before-all = [
     "echo $PATH",
-    "vcpkg --version",
+    "echo $VCPKG_INSTALLATION_ROOT",
+    "echo $VCPKG_ROOT",
 ]
 [tool.cibuildwheel.linux.environment]
 CC="clang"
 CXX="clang++"
+VCPKG_ROOT = "$VCPKG_INSTALLATION_ROOT"
+PATH="$VCPKG_ROOT:$PATH"
 
 [tool.cibuildwheel.macos]
 before-all = [
     "echo $PATH",
     "vcpkg --version",
+    "which vcpkg",
 ]
 environment = { MACOSX_DEPLOYMENT_TARGET="10.15" }
 
@@ -129,7 +133,9 @@ environment = { MACOSX_DEPLOYMENT_TARGET="10.15" }
 before-all = [
     "echo %PATH%",
     "vcpkg --version",
+    "echo %VCPKG_ROOT%",
 ]
+environment = { VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" }
 
 
 # [[tool.cibuildwheel.overrides]]
