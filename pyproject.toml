@@ -131,10 +131,10 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 [tool.cibuildwheel.windows]
 environment = { VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" }
 before-build = [
-    "pip install scipy"
+    "uv pip install --only-binary libigl scipy"
 ]
 before-test = [
-    "pip install scipy"
+    "uv pip install --only-binary libigl scipy"
 ]
 
 
