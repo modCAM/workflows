@@ -133,6 +133,9 @@ environment = { VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" }
 before-build = [
     "pip install scipy"
 ]
+before-test = [
+    "pip install scipy"
+]
 
 
 [[tool.cibuildwheel.overrides]]
