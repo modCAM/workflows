@@ -51,8 +51,7 @@ lint = [
     "ruff"
 ]
 test = [
-    "libigl ; platform_system != 'Windows'",
-    "libigl >= 2.6.3.dev1; platform_system == 'Windows'", # 2.6.2 is missing Windows binaries.
+    "libigl",
     "pooch",
     "pytest",
 ]
@@ -104,7 +103,11 @@ test-groups = ["test"]
 
 # Tests fail for free-threaded Python, because libigl (a test dependency) does
 # not support free-threaded Python.
-test-skip = ["cp314t-*", "*-musllinux_aarch64"]
+test-skip = [
+    "cp314t-*",
+    "*-musllinux_aarch64",
+    "*-win32", # libigl does not support 32-bit Windows.
+]
 
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
