@@ -101,10 +101,9 @@ config-settings = 'cmake.args="--preset vcpkg"'
 test-command = "pytest {project}/tests"
 test-groups = ["test"]
 
-skip = [
-    "cp314t-win32", # Free-threaded not entirely supported on 32-bit Windows
+build = [
+    "cp314t-win*",
 ]
-
 test-skip = [
     "cp314t-*", # libigl (a test dependency) does not support free-threaded Python.
     "*-musllinux_aarch64",
