@@ -31,8 +31,7 @@ classifiers = [
 	"Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "numpy ; platform_machine != ARM64",
-    "numpy >= 2.3.0 ; platform_machine == ARM64",
+    "numpy",
 ]
 
 [project.urls]
@@ -98,6 +97,12 @@ build-type = "Release"
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
 config-settings = 'cmake.args="--preset vcpkg"'
+
+# Numpy does not support Windows ARM64 for Python < 3.11
+skip = [
+    "cp39-win_arm64",
+    "cp310-win_arm64",
+]
 
 # Run pytest to ensure that the package was correctly built
 test-command = "pytest {project}/tests"
