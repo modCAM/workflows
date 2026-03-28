@@ -101,9 +101,6 @@ config-settings = 'cmake.args="--preset vcpkg"'
 test-command = "pytest {project}/tests"
 test-groups = ["test"]
 
-build = [
-    "cp314t-win*",
-]
 test-skip = [
     "cp314t-*", # libigl (a test dependency) does not support free-threaded Python.
     "*-musllinux_aarch64",
@@ -134,9 +131,6 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 
 [tool.cibuildwheel.windows]
 environment = { VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" }
-before-build = [
-    "python -VV",
-]
 
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
