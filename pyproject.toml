@@ -112,6 +112,7 @@ test-skip = [
     "cp314t-*", # libigl (a test dependency) does not support free-threaded Python.
     "*-musllinux_aarch64",
     "*-win32", # libigl does not support 32-bit Windows.
+    "*-win_arm64", # libigl does not support ARM64 Windows. # TODO: Might be able to build it from source?
 ]
 
 manylinux-x86_64-image = "manylinux_2_28"
