@@ -4,7 +4,7 @@ name: Wheels
 #   workflow_dispatch:
 #   release:
 #     types: [published]
-on: [pull_request, workflow_dispatch]
+on: [pull_request]
 
 permissions:
   contents: read
@@ -18,7 +18,11 @@ jobs:
       matrix:
         # macos-15-intel is an Intel runner, macos-14 is Apple silicon
         os:
-          - windows-11-arm
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - windows-latest
+          - macos-15-intel
+          - macos-14
 
     steps:
       - uses: actions/checkout@v6

@@ -11,8 +11,7 @@
 [build-system]
 requires = [
     "nanobind >= 2.12.0",
-    "numpy >= 2.0.0 ; platform_machine != 'ARM64'",
-    "numpy >= 2.3.0 ; platform_machine == 'ARM64'",
+    "numpy >=2.0.0",
     "scikit-build-core >= 0.12.2",
     "typing-extensions",
 ]
@@ -93,15 +92,19 @@ build-dir = "build/{wheel_tag}"
 [tool.scikit-build.cmake]
 build-type = "Release"
 
+[tool.pytest]
+strict = true
+testpaths = [ "tests/" ]
+
 [tool.cibuildwheel]
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
 config-settings = 'cmake.args="--preset vcpkg"'
 
-# Numpy does not support Windows ARM64 for Python < 3.11
 skip = [
-    "cp39-win_arm64",
+    "cp39-win_arm64", # Numpy does not support Windows ARM64 for Python < 3.11
     "cp310-win_arm64",
+    "cp314t-win*", # TODO: Figure out why free-threaded builds don't work on Windows
 ]
 
 # Run pytest to ensure that the package was correctly built
@@ -112,7 +115,7 @@ test-skip = [
     "cp314t-*", # libigl (a test dependency) does not support free-threaded Python.
     "*-musllinux_aarch64",
     "*-win32", # libigl does not support 32-bit Windows.
-    "*-win_arm64", # libigl does not support ARM64 Windows. # TODO: Might be able to build it from source?
+    "*-win_arm64", # libigl does not support ARM64 Windows. TODO: Might be able to build it from source?
 ]
 
 manylinux-x86_64-image = "manylinux_2_28"
@@ -139,9 +142,6 @@ environment = { VCPKG_ROOT="$(pwd)/vcpkg", PATH="$VCPKG_ROOT:$PATH", MACOSX_DEPL
 
 [tool.cibuildwheel.windows]
 environment = { VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" }
-before-build = [
-    'python -c "import platform; print(platform.machine())"',
-]
 
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
