@@ -19,11 +19,6 @@ jobs:
         # macos-15-intel is an Intel runner, macos-14 is Apple silicon
         os:
           - ubuntu-latest
-          - ubuntu-24.04-arm
-          - macos-14
-          - macos-15-intel
-          - windows-latest
-          - windows-11-arm
 
     steps:
       - uses: actions/checkout@v6
@@ -34,9 +29,12 @@ jobs:
           CIBW_BUILD_FRONTEND: "build[uv]"
           CIBW_TEST_COMMAND: >
             pytest {project}/tests
-            --junitxml=junit/test-results-${{ matrix.os }}-${{ strategy.job-index }}.xml
+            --junitxml={project}/junit/test-results-${{ matrix.os }}-${{ strategy.job-index }}.xml
         with:
           extras: "uv"
+
+      - name: pwd
+        run: pwd
 
       - name: Upload test results
         uses: actions/upload-artifact@v6

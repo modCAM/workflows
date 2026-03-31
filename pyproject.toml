@@ -101,6 +101,7 @@ testpaths = [ "tests/" ]
 build-verbosity = 1
 config-settings = 'cmake.args="--preset vcpkg"'
 
+build = [ "cp313-manylinux_x86_64" ]
 skip = [
     "cp39-win_arm64", # Numpy does not support Windows ARM64 for Python < 3.11
     "cp310-win_arm64",
