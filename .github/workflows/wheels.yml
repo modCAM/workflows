@@ -1,0 +1,25 @@
+name: Wheels
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  always_runs:
+    name: Job always runs
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job always runs"
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+      - name: Build sdist
+        run: echo "Build sdist"

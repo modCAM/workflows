@@ -1,27 +1,16 @@
-####################
-modCAM documentation
-####################
+#######################
+modCAM Python reference
+#######################
 
-ModCAM is free and open source software for Computer Aided Manufacturing (CAM)
-research.
-
+This document provides information about the Python interface to modCAM. Here you can find reference information on the library's functions and instructions on how to add Python bindings to the project.
 
 .. toctree::
-   :caption: Getting Started
    :maxdepth: 2
 
-   getting-started
-   CONTRIBUTING
+   Contributing <CONTRIBUTING>
 
 .. toctree::
    :caption: Reference
-   :maxdepth: 2
-   :hidden:
+   :maxdepth: 1
 
    reference/mesh
-
-.. toctree::
-   :caption: Bibliography
-   :hidden:
-
-   bibliography

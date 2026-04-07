@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "doctest",
     "eigen3",
     {
       "name": "libigl",
@@ -8,10 +7,6 @@
     }
   ],
   "overrides": [
-    {
-      "name": "doctest",
-      "version": "2.4.12"
-    },
     {
       "name": "eigen3",
       "version": "3.4.0"
