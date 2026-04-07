@@ -1,91 +1,25 @@
 name: Wheels
 
-# on:
-#   workflow_dispatch:
-#   release:
-#     types: [published]
-on: [pull_request]
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
 
 permissions:
   contents: read
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        # macos-15-intel is an Intel runner, macos-14 is Apple silicon
-        os:
-          - ubuntu-latest
+  always_runs:
+    name: Job always runs
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job always runs"
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v3.4.0
-        env:
-          CIBW_BUILD_FRONTEND: "build[uv]"
-          CIBW_TEST_COMMAND: >
-            ls /host && pytest {project}/tests
-            --junitxml={project}/junit/test-results-${{ matrix.os }}-${{ strategy.job-index }}.xml
-        with:
-          extras: "uv"
-
-      - name: pwd
-        run: pwd
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v6
-        with:
-          name: pytest-results-${{ matrix.os }}-${{ strategy.job-index }}
-          path: junit/test-results-${{ matrix.os }}-${{ strategy.job-index }}.xml
-        if: ${{ always() }}
-
-      # - name: Upload wheel artifacts
-      #   uses: actions/upload-artifact@v6
-      #   continue-on-error: true
-      #   with:
-      #     name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
-      #     path: ./wheelhouse/*.whl
-      #     if-no-files-found: error
-      #     compression-level: 6
-      #     overwrite: false
-      #     include-hidden-files: false
-      #     retention-days: 5
-
-  # build_sdist:
-  #   name: Build source distribution
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'release' && github.event.action == 'published'
-
-  #   steps:
-  #     - uses: actions/checkout@v6
-
-  #     - name: Build sdist
-  #       run: pipx run build --sdist
-
-  #     - uses: actions/upload-artifact@v6
-  #       with:
-  #         name: cibw-sdist
-  #         path: dist/*.tar.gz
-  #         retention-days: 5
-
-  # upload_pypi:
-  #   name: Publish to PyPI
-  #   needs: [build_wheels, build_sdist]
-  #   runs-on: ubuntu-latest
-  #   environment: pypi
-  #   permissions:
-  #     id-token: write
-  #   if: github.event_name == 'release' && github.event.action == 'published'
-
-  #   steps:
-  #     - uses: actions/download-artifact@v7
-  #       with:
-  #         pattern: cibw-*
-  #         path: dist
-  #         merge-multiple: true
-
-  #     - uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Build sdist
+        run: echo "Build sdist"
